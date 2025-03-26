@@ -15,7 +15,7 @@ async function startConsumer() {
         // const connection = await amqp.connect(RABBIT_HOST);
         const connection = await amqp.connect({
             protocol: 'amqp',
-            hostname: RABBITMQ_URL,
+            hostname: process.env.RABBITMQ_URL,
             port: 5672,
             username: process.env.RABBITMQ_USER,
             password: process.env.RABBITMQ_PASSWORD
