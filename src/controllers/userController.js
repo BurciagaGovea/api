@@ -1,4 +1,6 @@
-import User from "../models/userModel.js"
+import User from "../models/userModel.js";
+import { userCreatedEvent } from "../services/rabbitServicesEvent.js";
+import jwt from 'jsonwebtoken';
 
 export const getUser = async (req, res) => {
     try {
@@ -45,6 +47,7 @@ export const createUser = async (req, res) => {
             crationDate: new Date(),
         });
 
+        await userCreatedEvent(newUser);
         console.log(newUser);
         return res.status(201).json({ mensaje: "Usuario creado", data: newUser });
 
@@ -127,4 +130,52 @@ export const deleteUser = async (req, res) => {
         console.error('Error: ', error);
         return res.status(400).json({ mensaje: `Error al dar de baja al usuario ${id}` });
     }
+}
+
+const SECRET_KEY = process.env.SECRET_KEY || '';
+
+export const login = async (req, res) => {
+    try {
+        const { username, password } = req.body;
+
+        if (!username || !password) {
+            return res.status(400).json({ message: 'Usuario y contraseña son requeridos' });
+        }
+
+        const user = await User.findOne({ where: { username, password, status: true } });
+        if (!user) {
+            return res.status(404).json({ message: 'Usuario no encontrado o credenciales incorrectas' });
+        }
+
+        const token = jwt.sign(
+            { id: user.id, username: user.username, phone: user.phone },
+            SECRET_KEY,
+            { expiresIn: '1h' }
+        );
+
+        return res.status(200).json({ message: `Inicio de sesión exitoso: ${username}`, token });
+    } catch (error) {
+        console.error('Error en el inicio de sesión:', error);
+        return res.status(500).json({ message: 'Error interno del servidor' });
+    }
+};
+
+export async function createUserFromClient(clientData) {
+    const { id, name, lastName, email, phone, password } = clientData;
+
+    const existingUser = await User.findOne({ where: { username: email } });
+    if (existingUser) {
+        console.log("Usuario ya existe: ", email);
+        return;
+    }
+
+    const newUser = await User.create({
+        username: email,
+        password,
+        phone,
+        status: true,
+        creationDate: new Date(),
+    });
+
+    console.log("Usuario creado:", newUser.username);
 }

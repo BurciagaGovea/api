@@ -15,7 +15,7 @@ const swaggerOptions = {
       },
     ],
   },
-  apis: ["./src/routes/userRoutes.js"], // Asegúrate de que la ruta sea correcta
+  apis: ["./src/routes/userRoutes.js"],
 };
 
 const swaggerSpec = swaggerJSDoc(swaggerOptions);

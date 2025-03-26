@@ -26,7 +26,7 @@ const User = sequelize.define("User", {
         allowNull: false,
         defaultValue: true,
     },
-    creationDate: { // Había un error en el nombre de esta propiedad
+    creationDate: {
         type: DataTypes.DATE,
         allowNull: false,
         defaultValue: DataTypes.NOW,

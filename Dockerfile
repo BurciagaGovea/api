@@ -8,7 +8,6 @@ RUN npm install --omit=dev
 
 COPY . .
 
-# Instalar netcat (nc) para poder esperar a MySQL
 RUN apk add --no-cache netcat-openbsd
 
 COPY wait-for-mysql.sh /wait-for-mysql.sh
