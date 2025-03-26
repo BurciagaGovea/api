@@ -1,33 +1,37 @@
 // https://www.rabbitmq.com/tutorials/tutorial-one-javascript
-
 import amqp from "amqplib";
 import dotenv from "dotenv";
 import { createUserFromClient } from "../controllers/userController.js";
 
 dotenv.config();
 
-const RABBIT_HOST = process.env.RABBIT_HOST;
+const RABBIT_PROTOCOL = process.env.RABBITMQ_PROTOCOL || "amqps";
+const RABBIT_HOST = process.env.RABBITMQ_HOST;
+const RABBIT_PORT = process.env.RABBITMQ_PORT || 5672;
+const RABBIT_USER = process.env.RABBITMQ_USER;
+const RABBIT_PASSWORD = process.env.RABBITMQ_PASSWORD;
+const RABBIT_VHOST = process.env.RABBITMQ_VHOST || "/";
 const RABBIT_EXCHANGE = "client_created";
 const QUEUE_NAME = "user_creation_queue";
 
 async function startConsumer() {
     try {
-        // const connection = await amqp.connect(RABBIT_HOST);
         const connection = await amqp.connect({
-            protocol: 'amqp',
-            hostname: process.env.RABBITMQ_URL,
-            port: 5672,
-            username: process.env.RABBITMQ_USER,
-            password: process.env.RABBITMQ_PASSWORD
+            protocol: RABBIT_PROTOCOL,
+            hostname: RABBIT_HOST,
+            port: RABBIT_PORT,
+            username: RABBIT_USER,
+            password: RABBIT_PASSWORD,
+            vhost: RABBIT_VHOST
         });
-        const channel = await connection.createChannel();
 
+        const channel = await connection.createChannel();
         await channel.assertExchange(RABBIT_EXCHANGE, "topic", { durable: true });
         const q = await channel.assertQueue(QUEUE_NAME, { durable: true });
 
         await channel.bindQueue(q.queue, RABBIT_EXCHANGE, "client.new");
 
-        console.log(`Esperando: ${RABBIT_EXCHANGE}`);
+        console.log(`Esperando mensajes en: ${RABBIT_EXCHANGE}`);
 
         channel.consume(q.queue, async (msg) => {
             if (msg !== null) {
