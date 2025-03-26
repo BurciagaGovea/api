@@ -12,7 +12,14 @@ const QUEUE_NAME = "user_creation_queue";
 
 async function startConsumer() {
     try {
-        const connection = await amqp.connect(RABBIT_HOST);
+        // const connection = await amqp.connect(RABBIT_HOST);
+        const connection = await amqp.connect({
+            protocol: 'amqp',
+            hostname: RABBITMQ_URL,
+            port: 5672,
+            username: process.env.RABBITMQ_USER,
+            password: process.env.RABBITMQ_PASSWORD
+        });
         const channel = await connection.createChannel();
 
         await channel.assertExchange(RABBIT_EXCHANGE, "topic", { durable: true });
