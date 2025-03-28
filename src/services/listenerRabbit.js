@@ -13,17 +13,14 @@ const RABBIT_PASSWORD = process.env.RABBITMQ_PASSWORD;
 const RABBIT_VHOST = process.env.RABBITMQ_VHOST || "/";
 const RABBIT_EXCHANGE = "client_created";
 const QUEUE_NAME = "user_creation_queue";
+console.log("conectando a", process.env.RABBIT_URL)
+
 
 async function startConsumer() {
     try {
-        const connection = await amqp.connect({
-            protocol: RABBIT_PROTOCOL,
-            hostname: RABBIT_HOST,
-            port: RABBIT_PORT,
-            username: RABBIT_USER,
-            password: RABBIT_PASSWORD,
-            vhost: RABBIT_VHOST
-        });
+        // const connection = await amqp.connect();
+        const connection = await amqp.connect(process.env.RABBIT_URL);
+
 
         const channel = await connection.createChannel();
         await channel.assertExchange(RABBIT_EXCHANGE, "topic", { durable: true });
