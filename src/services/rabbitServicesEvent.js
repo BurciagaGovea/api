@@ -8,13 +8,15 @@ const RABBIT_EXCHANGE = "user_event";
 const RABBIT_ROUTING_KEY = "user.created";
 
 export async function userCreatedEvent(user) {
-    const connection = await amqp.connect({
-        protocol: 'amqp',
-        hostname: RABBITMQ_URL,
-        port: 5672,
-        username: process.env.RABBITMQ_USER,
-        password: process.env.RABBITMQ_PASSWORD
-    });
+    // const connection = await amqp.connect({
+    //     protocol: 'amqp',
+    //     hostname: RABBITMQ_URL,
+    //     port: 5672,
+    //     username: process.env.RABBITMQ_USER,
+    //     password: process.env.RABBITMQ_PASSWORD
+    // });
+    const connection = await amqp.connect(process.env.RABBIT_URL);
+
     const channel = await connection.createChannel();
 
     await channel.assertExchange(RABBIT_EXCHANGE, "topic", { durable: true });
