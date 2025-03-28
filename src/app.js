@@ -17,7 +17,7 @@ app.use("/api/users", userRoutes);
 //Documentación Swagger
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-// startConsumer();
+startConsumer();
 
 export default app;
 

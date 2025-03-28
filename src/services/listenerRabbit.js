@@ -13,7 +13,7 @@ const RABBIT_PASSWORD = process.env.RABBITMQ_PASSWORD;
 const RABBIT_VHOST = process.env.RABBITMQ_VHOST || "/";
 const RABBIT_EXCHANGE = "client_created";
 const QUEUE_NAME = "user_creation_queue";
-console.log("conectando a", process.env.RABBIT_URL)
+// console.log("conectando a", process.env.RABBIT_URL)
 
 
 async function startConsumer() {
