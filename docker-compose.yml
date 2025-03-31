@@ -13,71 +13,71 @@ services:
     networks:
       - proyecto
     restart: "no"
-  # mysql:
-  #   image: mysql:latest
-  #   container_name: mysql_con
-  #   restart: always
-  #   env_file:
-  #     - ./.env
-  #   environment:
-  #     MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
-  #     MYSQL_DATABASE: "${MYSQL_DATABASE}"
-  #     MYSQL_USER: "${MYSQL_USER}"
-  #     MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
-  #   ports:
-  #     - "3307:3306" #$MYSQL_LOCAL_PORT:$MYSQL_DOCKER_PORT
-  #   networks:
-  #     - proyecto
-  #   volumes:
-  #     - mysql_data:/var/lib/mysql
+  mysql:
+    image: mysql:latest
+    container_name: mysql
+    restart: always
+    env_file:
+      - ./.env
+    environment:
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+      MYSQL_DATABASE: "${MYSQL_DATABASE}"
+      MYSQL_USER: "${MYSQL_USER}"
+      MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
+    ports:
+      - "3307:3306" #$MYSQL_LOCAL_PORT:$MYSQL_DOCKER_PORT
+    networks:
+      - proyecto
+    volumes:
+      - mysql_data:/var/lib/mysql
 
     
-  # clients:
-  #   build: ../clients
-  #   container_name: clients_service
-  #   ports:
-  #     - "3001:3001"
-  #   networks:
-  #     - proyecto
-  #   depends_on:
-  #     - rabbitmq
+  clients:
+    build: ../clients
+    container_name: clients_service
+    ports:
+      - "3001:3001"
+    networks:
+      - proyecto
+    depends_on:
+      - rabbitmq
 
-  # email:
-  #   build: ../email
-  #   container_name: email_service
-  #   ports:
-  #     - "3002:3002"
-  #   networks:
-  #     - proyecto
-  #   depends_on:
-  #     - rabbitmq
+  email:
+    build: ../email
+    container_name: email_service
+    ports:
+      - "3002:3002"
+    networks:
+      - proyecto
+    depends_on:
+      - rabbitmq
 
-  # rabbitmq:
-  #   image: rabbitmq:3-management
-  #   container_name: rabbitmq_container
-  #   restart: always
-  #   environment:
-  #     RABBITMQ_DEFAULT_USER: "${RABBITMQ_USER}"
-  #     RABBITMQ_DEFAULT_PASS: "${RABBITMQ_PASSWORD}"
-  #   ports:
-  #     - "5672:5672"  # Puerto para la comunicación con RabbitMQ
-  #     - "15672:15672" # Interfaz web de administración
-  #   networks:
-  #     - proyecto
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq_container
+    restart: always
+    environment:
+      RABBITMQ_DEFAULT_USER: "${RABBITMQ_USER}"
+      RABBITMQ_DEFAULT_PASS: "${RABBITMQ_PASSWORD}"
+    ports:
+      - "5672:5672"  # Puerto para la comunicación con RabbitMQ
+      - "15672:15672" # Interfaz web de administración
+    networks:
+      - proyecto
 
-  # esb-service:
-  #     build: ../ebs-service
-  #     container_name: esb-service
-  #     ports:
-  #       - "8081:8081"
-  #     networks:
-  #       - proyecto
-  #     deploy:
-  #       resources:
-  #         limits:
-  #           memory: 512M
-  #         reservations:
-  #           memory: 256M
+  esb-service:
+      build: ../ebs-service
+      container_name: esb-service
+      ports:
+        - "8081:8081"
+      networks:
+        - proyecto
+      deploy:
+        resources:
+          limits:
+            memory: 512M
+          reservations:
+            memory: 256M
 
 networks:
   proyecto:

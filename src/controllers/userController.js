@@ -132,7 +132,7 @@ export const deleteUser = async (req, res) => {
     }
 }
 
-const SECRET_KEY = process.env.SECRET_KEY || '';
+const SECRET_KEY = process.env.SECRET_KEY || 'aJksd9QzPl+sVdK7vYc/L4dK8HgQmPpQ5K9yApUsj3w=';
 
 export const login = async (req, res) => {
     try {
